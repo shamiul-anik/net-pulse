@@ -6,9 +6,17 @@ export async function getNetworkIntelligence() {
   cacheLife("minutes");
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
     const res = await fetch("https://ipapi.co/json/", {
       next: { revalidate: 3600 },
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) throw new Error("API Limit/Error");
+
     const data = await res.json();
     return {
       ip: data.ip,
@@ -18,7 +26,8 @@ export async function getNetworkIntelligence() {
       tz: data.timezone,
       coords: `${data.latitude}, ${data.longitude}`,
     };
-  } catch {
+  } catch (error) {
+    console.error("Intelligence Fetch Error:", error);
     return {
       ip: "192.168.1.1",
       asn: "--",

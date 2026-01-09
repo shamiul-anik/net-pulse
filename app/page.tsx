@@ -182,7 +182,9 @@ export default function NetPulsePro() {
 
   const fetchNetInfo = useCallback(async () => {
     try {
+      console.log("Fetching network intelligence...");
       const data = await getNetworkIntelligence();
+      console.log("Network data received:", data);
       setIpInfo(data);
     } catch {
       setIpInfo((prev) => ({
@@ -206,6 +208,7 @@ export default function NetPulsePro() {
       }
 
       const handler = (e: Event) => {
+        console.log("PWA: beforeinstallprompt fired", e);
         e.preventDefault();
         setDeferredPrompt(e as BeforeInstallPromptEvent);
       };
