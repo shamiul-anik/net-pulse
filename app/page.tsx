@@ -416,36 +416,40 @@ export default function NetPulse() {
       <main className="max-w-7xl mx-auto grid grid-cols-12 gap-6 relative z-10 text-white">
         {/* Left Content */}
         <div className="col-span-12 lg:col-span-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Download Card */}
-            <GaugeCard
-              type="down"
-              value={stats.down}
-              peak={stats.downPeak}
-              stability={stats.downStability}
-              capacity={stats.downCapacity}
-              icon={<ArrowDown className="w-5 h-5 text-sky-400" aria-hidden="true" />}
-              gradientId="skyGradient"
-              gradientColors={["#38bdf8", "#818cf8"]}
-              target={500}
-            />
+          <section aria-labelledby="metrics-title">
+            <h2 id="metrics-title" className="sr-only">Network Performance Metrics</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Download Card */}
+              <GaugeCard
+                type="down"
+                value={stats.down}
+                peak={stats.downPeak}
+                stability={stats.downStability}
+                capacity={stats.downCapacity}
+                icon={<ArrowDown className="w-5 h-5 text-sky-400" aria-hidden="true" />}
+                gradientId="skyGradient"
+                gradientColors={["#38bdf8", "#818cf8"]}
+                target={500}
+              />
 
-            {/* Upload Card */}
-            <GaugeCard
-              type="up"
-              value={stats.up}
-              peak={stats.upPeak}
-              stability={stats.upStability}
-              capacity={stats.upCapacity}
-              icon={<ArrowUp className="w-5 h-5 text-indigo-400" aria-hidden="true" />}
-              gradientId="indigoGradient"
-              gradientColors={["#818cf8", "#c084fc"]}
-              target={200}
-            />
-          </div>
+              {/* Upload Card */}
+              <GaugeCard
+                type="up"
+                value={stats.up}
+                peak={stats.upPeak}
+                stability={stats.upStability}
+                capacity={stats.upCapacity}
+                icon={<ArrowUp className="w-5 h-5 text-indigo-400" aria-hidden="true" />}
+                gradientId="indigoGradient"
+                gradientColors={["#818cf8", "#c084fc"]}
+                target={200}
+              />
+            </div>
+          </section>
 
           {/* Latency Timeline */}
-          <div className="glass-card p-8">
+          <section className="glass-card p-8" aria-labelledby="latency-title">
+            <h2 id="latency-title" className="sr-only">Latency Analytics</h2>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
               <div>
                 <h3 className="text-xl font-bold mb-1">
@@ -469,21 +473,22 @@ export default function NetPulse() {
             <div className="h-64 relative">
               <Line data={chartData} options={chartOptions} />
             </div>
-          </div>
+          </section>
         </div>
 
         {/* Right Content */}
-        <div className="col-span-12 lg:col-span-4 space-y-6">
+        <aside className="col-span-12 lg:col-span-4 space-y-6" aria-labelledby="sidebar-title">
+          <h2 id="sidebar-title" className="sr-only">Connection & Environment Intelligence</h2>
           {/* Network Insights */}
           <div className="glass-card p-8">
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-white">
-              <ShieldCheck className="w-5 h-5 text-sky-400" />
+              <ShieldCheck className="w-5 h-5 text-sky-400" aria-hidden="true" />
               Network Insights
             </h3>
-            <div className="space-y-5 text-white">
+            <dl className="space-y-5 text-white">
               <div className="flex flex-col">
-                <span className="stat-label mb-1">Public Endpoint</span>
-                <div className="flex items-center justify-between">
+                <dt className="stat-label mb-1">Public Endpoint</dt>
+                <dd className="flex items-center justify-between">
                   <span className="mono text-sky-400 text-lg font-bold">
                     {ipInfo.ip}
                   </span>
@@ -494,9 +499,9 @@ export default function NetPulse() {
                   >
                     <Copy className="w-4 h-4 text-slate-500" aria-hidden="true" />
                   </button>
-                </div>
+                </dd>
               </div>
-              <div className="grid grid-cols-2 gap-4 h-px bg-white/5"></div>
+              <div className="grid grid-cols-2 gap-4 h-px bg-white/5" role="presentation"></div>
               <div className="grid grid-cols-2 gap-6">
                 <InfoItem label="ASN" value={ipInfo.asn} />
                 <InfoItem
@@ -509,16 +514,16 @@ export default function NetPulse() {
               </div>
               <div className="p-4 bg-sky-500/5 rounded-2xl border border-sky-500/10">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" aria-hidden="true"></div>
+                  <dt className="text-xs font-bold text-sky-400 uppercase tracking-widest">
                     ISP Latency Grade
-                  </span>
+                  </dt>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed font-medium" aria-live="polite">
+                <dd className="text-sm text-slate-400 leading-relaxed font-medium" aria-live="polite">
                   {healthText}
-                </p>
+                </dd>
               </div>
-            </div>
+            </dl>
           </div>
 
           {/* Environment Stats */}
@@ -556,8 +561,8 @@ export default function NetPulse() {
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </aside>
+      </main >
 
       <footer className="max-w-7xl mx-auto mt-16 pb-10 flex flex-col md:flex-row justify-between items-center text-slate-600 gap-6">
         <p className="text-sm">
@@ -646,7 +651,7 @@ export default function NetPulse() {
           </Dialog>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }
 
@@ -678,16 +683,16 @@ function GaugeCard({
   const offset = circ - (Math.min(pct, 100) / 100) * 470;
 
   return (
-    <div className="glass-card p-10 flex flex-col items-center">
+    <article className="glass-card p-10 flex flex-col items-center">
       <div className="w-full flex justify-between items-start mb-8 text-white">
-        <div>
-          <span className="stat-label">
+        <header>
+          <h3 className="stat-label">
             {type === "down" ? "Download" : "Upload"} Speed
-          </span>
+          </h3>
           <p className="text-xs text-slate-500 font-medium font-mono">
             Peak: {peak} Mbps
           </p>
-        </div>
+        </header>
         <div className="p-2 bg-white/5 rounded-lg border border-white/5" aria-hidden="true">
           {icon}
         </div>
@@ -745,7 +750,7 @@ function GaugeCard({
           <p className="text-slate-300 font-bold">{capacity}</p>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -764,10 +769,10 @@ function InfoItem({
 }: InfoItemProps) {
   return (
     <div>
-      <span className="stat-label">{label}</span>
-      <p className={`font-bold ${valueClass} ${truncate ? "truncate" : ""}`}>
+      <dt className="stat-label">{label}</dt>
+      <dd className={`font-bold ${valueClass} ${truncate ? "truncate" : ""}`}>
         {value}
-      </p>
+      </dd>
     </div>
   );
 }
@@ -789,14 +794,14 @@ function StatBox({
 }: StatBoxProps) {
   return (
     <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-      <span className="stat-label">{label}</span>
-      <p
+      <dt className="stat-label">{label}</dt>
+      <dd
         className={`${valueClass} font-bold text-slate-300 mt-1 ${truncate ? "truncate" : ""
           }`}
       >
         {value}
         {unit && <span className="text-xs text-slate-500 ml-1">{unit}</span>}
-      </p>
+      </dd>
     </div>
   );
 }
