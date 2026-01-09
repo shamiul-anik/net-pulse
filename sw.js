@@ -3,7 +3,7 @@ const ASSETS = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/icon.png",
+  "/img/icon.png",
   "https://cdn.jsdelivr.net/npm/chart.js",
   "https://cdn.tailwindcss.com",
   "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap",
