@@ -1,8 +1,8 @@
-"use cache";
-
+"use server";
 import { cacheLife } from "next/dist/server/use-cache/cache-life";
 
 export async function getNetworkIntelligence() {
+  "use cache";
   cacheLife("minutes");
 
   try {

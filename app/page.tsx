@@ -83,7 +83,7 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-export default function NetPulse() {
+export default function NetPulsePro() {
   const [isRunning, setIsRunning] = useState(false);
   const [currentTime, setCurrentTime] = useState("--:--:--");
   const [ipInfo, setIpInfo] = useState<IpInfo>({
@@ -366,7 +366,7 @@ export default function NetPulse() {
               <Activity className="w-6 h-6 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white">
-              Net<span className="gradient-text">Pulse</span>
+              Net<span className="gradient-text">Pulse Pro</span>
             </h1>
           </div>
           <div className="flex items-center gap-4 text-sm font-medium">
@@ -383,8 +383,8 @@ export default function NetPulse() {
           {deferredPrompt && (
             <button
               onClick={handleInstall}
-              className="hidden md:flex items-center gap-2 p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all font-bold text-sm"
-              aria-label="Install NetPulse as an app"
+              className="flex items-center gap-2 p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all font-bold text-sm"
+              aria-label="Install NetPulse Pro as an app"
             >
               <Download className="w-4 h-4" aria-hidden="true" /> Install App
             </button>
@@ -583,7 +583,7 @@ export default function NetPulse() {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4 text-sm text-slate-300">
-                <p>NetPulse performs all diagnostic calculations locally in your browser environment. We do not store your IP address or diagnostic history on our servers.</p>
+                <p>NetPulse Pro performs all diagnostic calculations locally in your browser environment. We do not store your IP address or diagnostic history on our servers.</p>
                 <ul className="list-disc pl-5 space-y-2">
                   <li><strong>Local Telemetry:</strong> All ping and jitter data is kept within your session.</li>
                   <li><strong>Public API:</strong> We utilize <code className="text-sky-400">ipapi.co</code> for geolocation, which operates under strict GDPR compliance.</li>
@@ -603,11 +603,11 @@ export default function NetPulse() {
                   <FileText className="text-indigo-400" aria-hidden="true" /> Enterprise API Access
                 </DialogTitle>
                 <DialogDescription>
-                  Integrate NetPulse intelligence into your own stack.
+                  Integrate NetPulse Pro intelligence into your own stack.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4 text-sm text-slate-300">
-                <p>NetPulse provides internal endpoints for real-time network auditing. Access is currently limited to authorized diagnostic agents.</p>
+                <p>NetPulse Pro provides internal endpoints for real-time network auditing. Access is currently limited to authorized diagnostic agents.</p>
                 <div className="bg-black/50 p-4 rounded-xl border border-white/5 font-mono text-[10px]">
                   <p className="text-emerald-400">GET /api/telemetry</p>
                   <p className="text-slate-500">{"// Returns cached environmental diagnostics"}</p>

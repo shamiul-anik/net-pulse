@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "NetPulse",
-    short_name: "NetPulse",
+    name: "NetPulse Pro",
+    short_name: "NetPulse Pro",
     description:
       "Professional real-time network diagnostics and speed intelligence.",
     start_url: "/",
@@ -12,7 +12,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#38bdf8",
     icons: [
       {
-        src: "/icon.png",
+        src: "/img/icon.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

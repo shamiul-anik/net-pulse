@@ -1,6 +1,6 @@
-# NetPulse | Premium Network Intelligence
+# NetPulse Pro | Premium Network Intelligence
 
-NetPulse is a professional-grade, real-time network diagnostics and speed intelligence platform built with Next.js 16. It leverages advanced caching strategies and high-fidelity testing infrastructure to provide accurate network audits.
+NetPulse Pro is a professional-grade, real-time network diagnostics and speed intelligence platform built with Next.js 16. It leverages advanced caching strategies and high-fidelity testing infrastructure to provide accurate network audits.
 
 ## 🚀 Experience the Precision
 
@@ -59,7 +59,7 @@ net-pulse/
 
 ## 🛡️ Privacy & Security
 
-NetPulse performs diagnostic calculations locally. No personal identification data or history is stored on our servers. Telemetry is used only for real-time testing and is destroyed upon session termination.
+NetPulse Pro performs diagnostic calculations locally. No personal identification data or history is stored on our servers. Telemetry is used only for real-time testing and is destroyed upon session termination.
 
 ---
 
