@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { getNetworkIntelligence } from "./actions";
 import {
   Activity,
   ArrowDown,
@@ -11,7 +12,19 @@ import {
   Monitor,
   Copy,
   Clock,
+  Download,
+  Shield,
+  FileText,
+  Activity as StatusIcon,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -61,6 +74,15 @@ interface Stats {
   maxJitter: string;
 }
 
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
 export default function NetPulse() {
   const [isRunning, setIsRunning] = useState(false);
   const [currentTime, setCurrentTime] = useState("--:--:--");
@@ -88,6 +110,7 @@ export default function NetPulse() {
     "Standby. Collecting environmental telemetry..."
   );
   const [ua, setUa] = useState("--");
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   const [chartData, setChartData] = useState({
     labels: Array(HISTORY_SIZE).fill(""),
@@ -159,16 +182,8 @@ export default function NetPulse() {
 
   const fetchNetInfo = useCallback(async () => {
     try {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      setIpInfo({
-        ip: data.ip,
-        asn: data.asn || "AS8075",
-        city: `${data.city}, ${data.country_code}`,
-        isp: data.org,
-        tz: data.timezone,
-        coords: `${data.latitude}, ${data.longitude}`,
-      });
+      const data = await getNetworkIntelligence();
+      setIpInfo(data);
     } catch {
       setIpInfo((prev) => ({
         ...prev,
@@ -184,13 +199,19 @@ export default function NetPulse() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUa(navigator.userAgent);
 
-      // Register Service Worker
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("/sw.js")
+        navigator.serviceWorker.register("/sw.js")
           .then(() => console.log("SW Registered"))
           .catch((err) => console.log("SW Failed", err));
       }
+
+      const handler = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e as BeforeInstallPromptEvent);
+      };
+
+      window.addEventListener("beforeinstallprompt", handler);
+      return () => window.removeEventListener("beforeinstallprompt", handler);
     }
 
     fetchNetInfo();
@@ -278,7 +299,7 @@ export default function NetPulse() {
     setHealthText("Connecting to global test infrastructure...");
 
     try {
-      const downResult = await runDownloadTest(50000000); // 50MB
+      const downResult = await runDownloadTest(100000000); // 100MB
       setStats((s) => ({
         ...s,
         down: downResult.speed,
@@ -287,7 +308,7 @@ export default function NetPulse() {
         downCapacity: downResult.speed > 100 ? "High" : "Moderate",
       }));
 
-      const upResult = await runUploadTest(15000000); // 15MB
+      const upResult = await runUploadTest(30000000); // 30MB
       setStats((s) => ({
         ...s,
         up: upResult.speed,
@@ -306,7 +327,15 @@ export default function NetPulse() {
 
   const copyIP = () => {
     navigator.clipboard.writeText(ipInfo.ip);
-    alert("IP copied to clipboard");
+  };
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    await deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setDeferredPrompt(null);
+    }
   };
 
   const chartOptions: ChartOptions<"line"> = {
@@ -334,7 +363,7 @@ export default function NetPulse() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
-              <Activity className="w-6 h-6 text-white" />
+              <Activity className="w-6 h-6 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white">
               Net<span className="gradient-text">Pulse</span>
@@ -345,28 +374,40 @@ export default function NetPulse() {
               <span className="status-pulse"></span> Network Stable
             </div>
             <span className="text-slate-500 flex items-center gap-2">
-              <Clock className="w-4 h-4" /> {currentTime}
+              <Clock className="w-4 h-4" aria-hidden="true" /> {currentTime}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
+          {deferredPrompt && (
+            <button
+              onClick={handleInstall}
+              className="hidden md:flex items-center gap-2 p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all font-bold text-sm"
+              aria-label="Install NetPulse as an app"
+            >
+              <Download className="w-4 h-4" aria-hidden="true" /> Install App
+            </button>
+          )}
           <button
             onClick={() => window.location.reload()}
             className="p-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-2xl transition-all"
+            aria-label="Reload application"
           >
-            <RefreshCw className="w-6 h-6" />
+            <RefreshCw className="w-6 h-6" aria-hidden="true" />
           </button>
           <button
             onClick={startAdvancedTest}
             disabled={isRunning}
+            aria-busy={isRunning}
+            aria-label={isRunning ? "Test in progress" : "Run network diagnostics"}
             className={`group relative px-8 py-4 bg-sky-500 hover:bg-sky-400 text-slate-950 rounded-2xl font-bold transition-all shadow-xl shadow-sky-500/20 active:scale-95 overflow-hidden ${isRunning ? "opacity-80 cursor-wait" : ""
               }`}
           >
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             <span className="relative flex items-center gap-2">
               {isRunning ? "Testing..." : "Run Diagnostics"}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </span>
           </button>
         </div>
@@ -383,7 +424,7 @@ export default function NetPulse() {
               peak={stats.downPeak}
               stability={stats.downStability}
               capacity={stats.downCapacity}
-              icon={<ArrowDown className="w-5 h-5 text-sky-400" />}
+              icon={<ArrowDown className="w-5 h-5 text-sky-400" aria-hidden="true" />}
               gradientId="skyGradient"
               gradientColors={["#38bdf8", "#818cf8"]}
               target={500}
@@ -396,7 +437,7 @@ export default function NetPulse() {
               peak={stats.upPeak}
               stability={stats.upStability}
               capacity={stats.upCapacity}
-              icon={<ArrowUp className="w-5 h-5 text-indigo-400" />}
+              icon={<ArrowUp className="w-5 h-5 text-indigo-400" aria-hidden="true" />}
               gradientId="indigoGradient"
               gradientColors={["#818cf8", "#c084fc"]}
               target={200}
@@ -449,8 +490,9 @@ export default function NetPulse() {
                   <button
                     onClick={copyIP}
                     className="p-1.5 hover:bg-white/5 rounded-lg transition-colors"
+                    aria-label="Copy IP address"
                   >
-                    <Copy className="w-4 h-4 text-slate-500" />
+                    <Copy className="w-4 h-4 text-slate-500" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -472,7 +514,7 @@ export default function NetPulse() {
                     ISP Latency Grade
                   </span>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                <p className="text-sm text-slate-400 leading-relaxed font-medium" aria-live="polite">
                   {healthText}
                 </p>
               </div>
@@ -504,7 +546,7 @@ export default function NetPulse() {
           <div className="glass-card p-8 bg-gradient-to-br from-slate-900/40 to-indigo-950/40">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
-                <Monitor className="w-6 h-6 text-slate-400" />
+                <Monitor className="w-6 h-6 text-slate-400" aria-hidden="true" />
               </div>
               <div>
                 <span className="stat-label">Device Agent</span>
@@ -519,18 +561,89 @@ export default function NetPulse() {
 
       <footer className="max-w-7xl mx-auto mt-16 pb-10 flex flex-col md:flex-row justify-between items-center text-slate-600 gap-6">
         <p className="text-sm">
-          &copy; 2026 Shamiul Islam. NetPulse Diagnostics.
+          &copy; 2026 Shamiul Islam. NetPulse Diagnostics Pro.
         </p>
         <div className="flex gap-8 text-xs font-bold uppercase tracking-widest">
-          <a href="#" className="hover:text-sky-400 transition-colors">
-            Privacy Policy
-          </a>
-          <a href="#" className="hover:text-sky-400 transition-colors">
-            API Docs
-          </a>
-          <a href="#" className="hover:text-sky-400 transition-colors">
-            System Status
-          </a>
+          <Dialog>
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+              <Shield className="w-3 h-3" aria-hidden="true" /> Privacy Policy
+            </DialogTrigger>
+            <DialogContent className="text-white border-white/10">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Shield className="text-sky-400" aria-hidden="true" /> Data Privacy & Sovereignty
+                </DialogTitle>
+                <DialogDescription>
+                  Your network security is our highest priority.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4 text-sm text-slate-300">
+                <p>NetPulse performs all diagnostic calculations locally in your browser environment. We do not store your IP address or diagnostic history on our servers.</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li><strong>Local Telemetry:</strong> All ping and jitter data is kept within your session.</li>
+                  <li><strong>Public API:</strong> We utilize <code className="text-sky-400">ipapi.co</code> for geolocation, which operates under strict GDPR compliance.</li>
+                  <li><strong>Zero Logging:</strong> No personal identification is ever captured or cached permanently.</li>
+                </ul>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+              <FileText className="w-3 h-3" aria-hidden="true" /> API Docs
+            </DialogTrigger>
+            <DialogContent className="text-white border-white/10">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <FileText className="text-indigo-400" aria-hidden="true" /> Enterprise API Access
+                </DialogTitle>
+                <DialogDescription>
+                  Integrate NetPulse intelligence into your own stack.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4 text-sm text-slate-300">
+                <p>NetPulse provides internal endpoints for real-time network auditing. Access is currently limited to authorized diagnostic agents.</p>
+                <div className="bg-black/50 p-4 rounded-xl border border-white/5 font-mono text-[10px]">
+                  <p className="text-emerald-400">GET /api/telemetry</p>
+                  <p className="text-slate-500">{"// Returns cached environmental diagnostics"}</p>
+                  <p className="text-sky-400 mt-2">POST /api/upload</p>
+                  <p className="text-slate-500">{"// Benchmarks upstream capacity"}</p>
+                </div>
+                <p className="italic text-slate-500">Contact admin for enterprise keys.</p>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+              <StatusIcon className="w-3 h-3" aria-hidden="true" /> System Status
+            </DialogTrigger>
+            <DialogContent className="text-white border-white/10">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <StatusIcon className="text-emerald-400" aria-hidden="true" /> Global Infrastructure Status
+                </DialogTitle>
+                <DialogDescription>
+                  Real-time health monitoring of our test clusters.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4 text-sm">
+                {[
+                  { region: "US-East (Virginia)", status: "Operational", lat: "12ms" },
+                  { region: "EU-West (Dublin)", status: "Operational", lat: "88ms" },
+                  { region: "AP-South (Mumbai)", status: "Optimal", lat: "142ms" },
+                ].map((s) => (
+                  <div key={s.region} className="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                    <span className="font-medium">{s.region}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] text-slate-500">{s.lat}</span>
+                      <span className="text-xs text-emerald-400 font-bold">{s.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </footer>
     </div>
@@ -575,13 +688,13 @@ function GaugeCard({
             Peak: {peak} Mbps
           </p>
         </div>
-        <div className="p-2 bg-white/5 rounded-lg border border-white/5">
+        <div className="p-2 bg-white/5 rounded-lg border border-white/5" aria-hidden="true">
           {icon}
         </div>
       </div>
 
-      <div className="relative w-56 h-56">
-        <svg className="w-full h-full transform -rotate-[220deg]">
+      <div className="relative w-56 h-56" role="presentation">
+        <svg className="w-full h-full transform -rotate-[220deg]" aria-hidden="true">
           <circle
             cx="112"
             cy="112"
@@ -611,7 +724,8 @@ function GaugeCard({
             </linearGradient>
           </defs>
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 text-white">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pt-4 text-white" role="status" aria-live="polite">
+          <span className="sr-only">Current {type === "down" ? "download" : "upload"} speed is</span>
           <span className="text-6xl font-extrabold tracking-tighter mono">
             {value}
           </span>

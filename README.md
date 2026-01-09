@@ -1,59 +1,66 @@
-# NetPulse 🚀
+# NetPulse | Premium Network Intelligence
 
-NetPulse is a state-of-the-art network diagnostics dashboard built with **Next.js 16**, **Tailwind CSS**, and **Chart.js**. It provides real-time insights into your connection's speed, latency, and environmental profile with a stunning, premium UI.
+NetPulse is a professional-grade, real-time network diagnostics and speed intelligence platform built with Next.js 16. It leverages advanced caching strategies and high-fidelity testing infrastructure to provide accurate network audits.
 
-![NetPulse Dashboard](https://img.shields.io/badge/UI-Premium-blueviolet?style=for-the-badge)
-![Framework](https://img.shields.io/badge/Framework-Next.js_15-black?style=for-the-badge)
+## 🚀 Experience the Precision
 
-## ✨ Features
-
-- **Real-world Throughput Testing**:
-  - **Download**: Measured via high-speed Cloudflare Edge nodes using `ReadableStream` tracking.
-  - **Upload**: Secure `POST` telemetry to Next.js API Routes.
-- **Precision Latency Tracking**:
-  - High-frequency RTT monitoring via fetch handshake.
-  - Mathematical Jitter derivation based on throughput variance.
-- **Deep Connection Profiling**:
-  - Public Endpoint (IP) detection via `ipapi.co`.
-  - ASN & ISP identification.
-  - Geographic coordinates and Timezone data.
-- **Premium Design System**:
-  - Glassmorphism architecture with blurred backdrops.
-  - Dynamic radial glow overlays.
-  - Animated status indicators and Lucide icons.
-- **PWA Ready**: Installable on desktop and mobile with offline asset caching.
+- **100MB High-Fidelity Tests**: Extended download benchmarks for accurate fiber-grade results.
+- **30MB Sustained Uploads**: Rigorous upstream testing to verify connection stability.
+- **Real-time Latency Analytics**: Live Chart.js visualization of ping and jitter fluctuations.
+- **Next.js 16 `"use cache"`**: Near-instant retrieval of network intelligence (IP, ISP, ASN).
+- **PWA Ready**: Fully installable as a standalone application on mobile and desktop.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: Next.js 15 (App Router), React 19.
-- **Styling**: Tailwind CSS 4.
-- **Icons**: Lucide React.
-- **Data Visualization**: Chart.js 4.x with `react-chartjs-2`.
-- **Telemetry**: `ipapi.co` & Cloudflare Edge.
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Runtime**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Components**: [Shadcn UI](https://ui.shadcn.com/) (Radix UI Primitives)
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **Visuals**: [Chart.js 4](https://www.chartjs.org/) + [Lucide React](https://lucide.dev/)
+- **PWA**: Custom Service Worker + Dynamic Manifest API
+- **Telemetry**: Server-side cached API integration (ipapi.co)
 
-## 🚀 Getting Started
+## 📂 Project Structure
 
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-2. **Launch development server**:
-   ```bash
-   npm run dev
-   ```
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
+```text
+net-pulse/
+├── app/                    # Next.js App Router
+│   ├── api/                # API Route Handlers
+│   ├── components/         # Shared React Components
+│   ├── ui/                 # Shadcn UI (Radix) Primitives
+│   ├── actions.ts          # Cached Server Actions
+│   ├── layout.tsx          # Root Layout & Metadata
+│   ├── manifest.ts         # Dynamic PWA Manifest
+│   └── page.tsx            # Main Diagnostics Engine
+├── lib/                    # Shared Utilities (cn, etc.)
+├── public/                 # Static Assets & Service Worker
+├── components.json         # Shadcn UI Registry
+├── next.config.ts          # Stable Platform Configuration
+├── tsconfig.json           # TypeScript Configuration
+└── README.md               # Documentation
+```
 
-## 📊 Real-time Logic
+## 📦 Getting Started
 
-NetPulse performs actual data transfers:
+1.  **Clone the repository**
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Run development server**:
+    ```bash
+    npm run dev
+    ```
+4.  **Build for production**:
+    ```bash
+    npm run build
+    ```
 
-- **Ping**: RTT measured by fetching `/favicon.ico` with `cache: 'no-store'`.
-- **Download**: 50MB chunked transfer analysis from Cloudflare.
-- **Upload**: 15MB transfer time to `/api/upload` API route.
+## 🛡️ Privacy & Security
+
+NetPulse performs diagnostic calculations locally. No personal identification data or history is stored on our servers. Telemetry is used only for real-time testing and is destroyed upon session termination.
 
 ---
 
-_Designed with ❤️ for premium network enthusiasts by Shamiul Islam._
+_Engineered by Shamiul Islam. &copy; 2026 NetPulse Diagnostics Pro._
