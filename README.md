@@ -1,55 +1,58 @@
 # NetPulse 🚀
 
-NetPulse is a state-of-the-art network diagnostics dashboard designed for high-performance telemetry tracking. It provides real-time insights into your connection's speed, latency, and environmental profile with a stunning, premium UI.
+NetPulse is a state-of-the-art network diagnostics dashboard built with **Next.js 16**, **Tailwind CSS**, and **Chart.js**. It provides real-time insights into your connection's speed, latency, and environmental profile with a stunning, premium UI.
 
 ![NetPulse Dashboard](https://img.shields.io/badge/UI-Premium-blueviolet?style=for-the-badge)
-![Tech](https://img.shields.io/badge/Tech-Tailwind_CSS_|_Chart.js-blue?style=for-the-badge)
+![Framework](https://img.shields.io/badge/Framework-Next.js_15-black?style=for-the-badge)
 
 ## ✨ Features
 
 - **Real-world Throughput Testing**:
   - **Download**: Measured via high-speed Cloudflare Edge nodes using `ReadableStream` tracking.
-  - **Upload**: Secure `POST` telemetry to Vercel Serverless endpoints.
+  - **Upload**: Secure `POST` telemetry to Next.js API Routes.
 - **Precision Latency Tracking**:
-  - High-frequency RTT monitoring to the nearest network edge.
+  - High-frequency RTT monitoring via fetch handshake.
   - Mathematical Jitter derivation based on throughput variance.
 - **Deep Connection Profiling**:
-  - Public Endpoint (IP) detection.
+  - Public Endpoint (IP) detection via `ipapi.co`.
   - ASN & ISP identification.
   - Geographic coordinates and Timezone data.
 - **Premium Design System**:
-  - Glassmorphism architecture with 20px blur.
+  - Glassmorphism architecture with blurred backdrops.
   - Dynamic radial glow overlays.
-  - Animated status indicators.
-- **Vercel Optimized**: Ready-to-deploy structure with Serverless API support.
+  - Animated status indicators and Lucide icons.
+- **PWA Ready**: Installable on desktop and mobile with offline asset caching.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: HTML5, Vanilla JavaScript.
-- **Backend (Testing Target)**: Vercel Node.js Serverless Functions.
-- **Styling**: Tailwind CSS.
-- **Data Visualization**: Chart.js 4.x.
+- **Frontend**: Next.js 15 (App Router), React 19.
+- **Styling**: Tailwind CSS 4.
+- **Icons**: Lucide React.
+- **Data Visualization**: Chart.js 4.x with `react-chartjs-2`.
 - **Telemetry**: `ipapi.co` & Cloudflare Edge.
 
-## 🚀 Deployment to Vercel
+## 🚀 Getting Started
 
-1. **Prerequisites**: [Vercel CLI](https://vercel.com/cli) installed.
-2. **Launch**:
+1. **Install dependencies**:
    ```bash
-   vercel deploy
+   npm install
    ```
-3. **Local Testing**:
+2. **Launch development server**:
    ```bash
-   vercel dev
+   npm run dev
+   ```
+3. **Build for production**:
+   ```bash
+   npm run build
    ```
 
 ## 📊 Real-time Logic
 
-Unlike traditional simulators, NetPulse performs actual data transfers:
+NetPulse performs actual data transfers:
 
 - **Ping**: RTT measured by fetching `/favicon.ico` with `cache: 'no-store'`.
-- **Download**: Chunked transfer analysis of a 15MB payload from Cloudflare.
-- **Upload**: Measuring transfer time of a generated `Uint8Array` to `/api/upload`.
+- **Download**: 50MB chunked transfer analysis from Cloudflare.
+- **Upload**: 15MB transfer time to `/api/upload` API route.
 
 ---
 

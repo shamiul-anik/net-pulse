@@ -2,7 +2,7 @@
   "name": "NetPulse",
   "short_name": "NetPulse",
   "description": "Professional real-time network diagnostics and speed intelligence.",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#38bdf8",
