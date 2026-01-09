@@ -485,10 +485,10 @@ export default function NetPulse() {
               <ShieldCheck className="w-5 h-5 text-sky-400" aria-hidden="true" />
               Network Insights
             </h3>
-            <dl className="space-y-5 text-white">
+            <div className="space-y-5 text-white">
               <div className="flex flex-col">
-                <dt className="stat-label mb-1">Public Endpoint</dt>
-                <dd className="flex items-center justify-between">
+                <span className="stat-label mb-1">Public Endpoint</span>
+                <div className="flex items-center justify-between">
                   <span className="mono text-sky-400 text-lg font-bold">
                     {ipInfo.ip}
                   </span>
@@ -499,9 +499,9 @@ export default function NetPulse() {
                   >
                     <Copy className="w-4 h-4 text-slate-500" aria-hidden="true" />
                   </button>
-                </dd>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 h-px bg-white/5" role="presentation"></div>
+              <div className="grid grid-cols-2 gap-4 h-px bg-white/5"></div>
               <div className="grid grid-cols-2 gap-6">
                 <InfoItem label="ASN" value={ipInfo.asn} />
                 <InfoItem
@@ -515,15 +515,15 @@ export default function NetPulse() {
               <div className="p-4 bg-sky-500/5 rounded-2xl border border-sky-500/10">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" aria-hidden="true"></div>
-                  <dt className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+                  <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
                     ISP Latency Grade
-                  </dt>
+                  </span>
                 </div>
-                <dd className="text-sm text-slate-400 leading-relaxed font-medium" aria-live="polite">
+                <p className="text-sm text-slate-400 leading-relaxed font-medium" aria-live="polite">
                   {healthText}
-                </dd>
+                </p>
               </div>
-            </dl>
+            </div>
           </div>
 
           {/* Environment Stats */}
@@ -570,7 +570,7 @@ export default function NetPulse() {
         </p>
         <div className="flex gap-8 text-xs font-bold uppercase tracking-widest">
           <Dialog>
-            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2 hover:cursor-pointer">
               <Shield className="w-3 h-3" aria-hidden="true" /> Privacy Policy
             </DialogTrigger>
             <DialogContent className="text-white border-white/10">
@@ -594,7 +594,7 @@ export default function NetPulse() {
           </Dialog>
 
           <Dialog>
-            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2 hover:cursor-pointer">
               <FileText className="w-3 h-3" aria-hidden="true" /> API Docs
             </DialogTrigger>
             <DialogContent className="text-white border-white/10">
@@ -620,7 +620,7 @@ export default function NetPulse() {
           </Dialog>
 
           <Dialog>
-            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2">
+            <DialogTrigger className="hover:text-sky-400 transition-colors flex items-center gap-2 hover:cursor-pointer">
               <StatusIcon className="w-3 h-3" aria-hidden="true" /> System Status
             </DialogTrigger>
             <DialogContent className="text-white border-white/10">
@@ -769,10 +769,10 @@ function InfoItem({
 }: InfoItemProps) {
   return (
     <div>
-      <dt className="stat-label">{label}</dt>
-      <dd className={`font-bold ${valueClass} ${truncate ? "truncate" : ""}`}>
+      <span className="stat-label">{label}</span>
+      <p className={`font-bold ${valueClass} ${truncate ? "truncate" : ""}`}>
         {value}
-      </dd>
+      </p>
     </div>
   );
 }
@@ -794,14 +794,14 @@ function StatBox({
 }: StatBoxProps) {
   return (
     <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-      <dt className="stat-label">{label}</dt>
-      <dd
+      <span className="stat-label">{label}</span>
+      <p
         className={`${valueClass} font-bold text-slate-300 mt-1 ${truncate ? "truncate" : ""
           }`}
       >
         {value}
         {unit && <span className="text-xs text-slate-500 ml-1">{unit}</span>}
-      </dd>
+      </p>
     </div>
   );
 }
